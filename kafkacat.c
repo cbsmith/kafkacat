@@ -71,7 +71,6 @@ static struct stats {
         uint64_t rx;
 } stats;
 
-
 /* Partition's at EOF state array */
 int *part_eof = NULL;
 /* Number of partitions that has reached EOF */
@@ -482,6 +481,7 @@ static void consume_cb (rd_kafka_message_t *rkmessage, void *opaque) {
         }
 
         /* Print message */
+
         fmt_msg_output(fp, rkmessage);
 
         if (conf.mode == 'C') {
@@ -1372,6 +1372,9 @@ static void argparse (int argc, char **argv,
 #if ENABLE_JSON
                              "J"
 #endif
+#if ENABLE_AVRO
+                             "a:"
+#endif
                         )) != -1) {
                 switch (opt) {
                 case 'P':
@@ -1439,6 +1442,12 @@ static void argparse (int argc, char **argv,
 #if ENABLE_JSON
                 case 'J':
                         conf.flags |= CONF_F_FMT_JSON;
+                        break;
+#endif
+#if ENABLE_AVRO
+                        case 'a':
+                        conf.flags |= CONF_F_FMT_AVRO;
+                        conf.sru = optarg;
                         break;
 #endif
                 case 'D':

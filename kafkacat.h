@@ -43,6 +43,10 @@
 #include "config.h"
 #endif
 
+#ifdef ENABLE_AVRO
+#include <libserdes/serdes-avro.h>
+#endif
+
 #ifdef RD_KAFKA_V_HEADER
 #define HAVE_HEADERS 1
 #else
@@ -89,6 +93,7 @@ struct conf {
 #define CONF_F_APIVERREQ_USER 0x80 /* User set api.version.request */
 #define CONF_F_NO_CONF_SEARCH 0x100 /* Disable default config file search */
 #define CONF_F_BROKERS_SEEN 0x200 /* Brokers have been configured */
+#define CONF_F_FMT_AVRO   0x400 /* Avro formatting */
         int     delim;
         int     key_delim;
 
@@ -118,10 +123,12 @@ struct conf {
         rd_kafka_topic_t      *rkt;
 
         char   *debug;
+#ifdef ENABLE_AVRO
+    char *sru;
+#endif
 };
 
 extern struct conf conf;
-
 
 void RD_NORETURN fatal0 (const char *func, int line,
                                        const char *fmt, ...);
@@ -140,7 +147,6 @@ void error0 (int erroronexit, const char *func, int line,
         } while (0)
 
 
-
 /*
  * format.c
  */
@@ -149,9 +155,19 @@ void fmt_msg_output (FILE *fp, const rd_kafka_message_t *rkmessage);
 void fmt_parse (const char *fmt);
 
 void fmt_init (void);
+
 void fmt_term (void);
 
 
+#if ENABLE_AVRO
+
+/*
+ * avro.c
+ */
+
+void cnv_msg_output_avro(const rd_kafka_message_t *rkmessage, char *str);
+
+#endif
 
 #if ENABLE_JSON
 /*
