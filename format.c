@@ -235,8 +235,16 @@ static void fmt_msg_output_str (FILE *fp,
 
                 case KC_FMT_PAYLOAD:
                         if (rkmessage->len)
-                                r = fwrite(rkmessage->payload,
-                                           rkmessage->len, 1, fp);
+                                if(conf.flags & CONF_F_FMT_AVRO){
+                                        char str[2048];
+                                        cnv_msg_output_avro(rkmessage, &str);
+                                        r = fwrite(str,
+                                                strlen(str), 1, fp);
+                                }else{
+                                        r = fwrite(
+                                                rkmessage->payload,
+                                                rkmessage->len, 1, fp);
+                                }
                         else if (conf.flags & CONF_F_NULL)
                                 r = fwrite(conf.null_str,
                                            conf.null_str_len, 1, fp);
