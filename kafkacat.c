@@ -984,6 +984,9 @@ static void RD_NORETURN usage (const char *argv0, int exitcode,
 #if ENABLE_JSON
                 "  -J                 Output with JSON envelope\n"
 #endif
+#if ENABLE_AVRO
+		"  -a <url>           Deserialize Avro messages using schema registry at <url>\n"
+#endif
                 "  -D <delim>         Delimiter to separate messages on output\n"
                 "  -K <delim>         Print message keys prefixing the message\n"
                 "                     with specified delimiter.\n"
